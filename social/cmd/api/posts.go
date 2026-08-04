@@ -20,6 +20,21 @@ type postKey string
 
 const postCtx postKey = "post"
 
+// CreatePost godoc
+//
+//	@Summary		Creates a Post
+//	@Description	Creates Post by ID with titl, content
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		CreatePostPayload	true	"Post payload"
+//	@Success		201		{object}	store.Post
+//	@Failure		400		{object}	error
+//	@Failure		401		{object}	error
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts [post]
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreatePostPayload
 	if err := ReadJSON(w, r, &payload); err != nil {
@@ -49,6 +64,18 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// GetPost godoc
+//
+//	@Summary		Fetches a post
+//	@Description	Fetches a post and its comments by post ID
+//	@Tags			posts
+//	@Produce		json
+//	@Param			postID	path		int	true	"Post ID"
+//	@Success		200		{object}	store.Post
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID} [get]
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 	comments, err := app.store.Comments.GetPostByID(r.Context(), post.ID)
@@ -64,6 +91,18 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// DeletePost godoc
+//
+//	@Summary		Deletes a post
+//	@Description	Deletes a post by ID
+//	@Tags			posts
+//	@Param			postID	path	int	true	"Post ID"
+//	@Success		244		"No Content"
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID} [delete]
 func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	id, err := strconv.ParseInt(idParam, 10, 64)
@@ -89,6 +128,22 @@ type UpdatePostPayload struct {
 	Content *string `json:"content" validate:"omitempty,max=1000"`
 }
 
+// UpdatePost godoc
+//
+//	@Summary		Updates a Post
+//	@Description	Updates Post by Id
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"Post ID"
+//	@Param			payload	body		UpdatePostPayload	true	"Post update payload"
+//	@Success		200		{object}	store.Post
+//	@Failure		400		{object}	error
+//	@Failure		401		{object}	error
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID}	[patch]
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
@@ -165,6 +220,21 @@ type CreateCommentPayload struct {
 	UserID  int64  `json:"user_id" validate:"required"`
 }
 
+// CreateComment godoc
+//
+//	@Summary		Creates a comment on a post
+//	@Description	Adds a new comment to a specific post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postID	path		int						true	"Post ID"
+//	@Param			payload	body		CreateCommentPayload	true	"Comment payload"
+//	@Success		201		{object}	store.Comment
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID}/comments [post]
 func (app *application) createCommentPostHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateCommentPayload
 	if err := ReadJSON(w, r, &payload); err != nil {

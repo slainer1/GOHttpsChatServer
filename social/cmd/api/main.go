@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	_ "main/docs"
 	"main/internal/db"
 	"main/internal/env"
 	"main/internal/store"
@@ -19,6 +20,8 @@ const version = "0.0.2"
 //	@description	API for GopherSocial, a social network for gophers
 //	@termsOfService	http://swagger.io/terms/
 
+//	@host	localhost:8080
+
 //	@contact.name	API Support
 //	@contact.url	http://www.swagger.io/support
 //	@contact.email	support@swagger.io
@@ -26,12 +29,13 @@ const version = "0.0.2"
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @BasePath					/v1
+//	@BasePath					/v1
 //
-// @securityDefinitions.apikey	ApiKeyAuth
-// @in							header
-// @name						Authorization
-// @desciription
+//	@securityDefinitions.apikey	ApiKeyAuth
+//	@in							header
+//	@name						Authorization
+//	@desciription				JWT Authorization header using the Bearer scheme
+
 func main() {
 	cfg := config{
 		addr:   env.GetString("ADDR", ":8080"),

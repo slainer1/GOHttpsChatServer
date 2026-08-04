@@ -19,13 +19,15 @@ const userCtx userKey = "user"
 //	@Summary		Fetches a user profile
 //	@Description	Fetches a user profile by ID
 //	@Tags			users
+//	@Accept			json
+//	@Produce		json
 //	@Param			id	path		int	true	"User ID"
 //	@Success		200	{object}	store.User
 //	@Failure		400	{object}	error
 //	@Failure		404	{object}	error
 //	@Failure		500	{object}	error
 //	@Security		ApiKeyAuth
-//	@Router			/users/{id}	[get]
+//	@Router			/users/{userID}	[get]
 func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := app.getUserFromContext(r)
 	if err := app.jsonResponse(w, http.StatusOK, user); err != nil {
@@ -37,6 +39,21 @@ type FollowUser struct {
 	UserID int64 `json:"user_id"`
 }
 
+// FollowUser godoc
+//
+//	@Summary		Follows a user profile
+//	@Description	Fetches a user profile by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"Target ID to follow"
+//	@Success		200	{object}	store.User
+//	@Failure		400	{object}	error
+//	@Failure		404	{object}	error
+//	@Failure		409	{object}	error
+//	@Failure		500	{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/{userID}/follow	[put]
 func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
 	followerUser := app.getUserFromContext(r)
 	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
@@ -61,6 +78,20 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// UnfollowUser godoc
+//
+//	@Summary		Unfollows a user profile
+//	@Description	Unfollows a user profile by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			userID	path		int		true	"Target User ID to unfollow"
+//	@Success		204		{string}	string	"No Content"
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/{userID}/unfollow [put]
 func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
 	followerUser := app.getUserFromContext(r)
 	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {

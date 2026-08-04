@@ -5,6 +5,22 @@ import (
 	"net/http"
 )
 
+// GetFeed godoc
+//
+//	@Summary		Fetches a user's feed
+//	@Description	Fetches a user's feed
+//	@Tags			feed
+//	@Accept			json
+//	@Produce		json
+//	@Param			limit	query		int		false	"Limit results"		default(20)
+//	@Param			offset	query		int		false	"Offset results"	default(0)
+//	@Param			sort	query		string	false	"Sort direction"	Enums(asc, desc)	default(desc)
+//	@Success		200		{array}		store.Post
+//	@Failure		400		{object}	error
+//	@Failure		401		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/feed [get]
 func (app *application) getUserFeedHandler(w http.ResponseWriter, r *http.Request) {
 	// Pagination, filters, sorting endpoint
 	fq := store.PaginationFeedQuery{

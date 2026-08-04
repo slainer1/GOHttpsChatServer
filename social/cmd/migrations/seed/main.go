@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	addr := env.GetString("DB_ADDR", "postgresql://:Nathansno1@localhost/socialnetwork?sslmode=disable")
+	addr := env.GetString("DB_ADDR", "postgresql://user:Nathansno1@localhost/socialnetwork?sslmode=disable")
 	conn, err := db.New(addr, 3, 3, "15m")
 	if err != nil {
 		log.Fatal(err)

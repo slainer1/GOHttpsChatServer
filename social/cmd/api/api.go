@@ -48,7 +48,7 @@ func (app *application) mount() *chi.Mux {
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/health", app.healthCheckHandler)
 
-		docsURL := fmt.Sprintf("%s/swagger/doc.json", app.config.addr)
+		docsURL := fmt.Sprintf("%s/v1/swagger/doc.json", app.config.addr)
 		r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsURL)))
 		//r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
 
