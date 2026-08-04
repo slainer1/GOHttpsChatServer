@@ -16,16 +16,16 @@ const userCtx userKey = "user"
 
 // GetUser godoc
 //
-// @Summary		Fetches a user profile
-// @Description	Fetches a user profile by ID
-// @Tags 		users
-// @Param		id	path	int	true	"User ID"
-// @Success		200	{object}	store.User
-// @Failure		400	{object}	error
-// @Failure		404	{object}	error
-// @Failure		500	{object}	error
-// @Security	ApiKeyAuth
-// @Router		/users/{id}	[get]
+//	@Summary		Fetches a user profile
+//	@Description	Fetches a user profile by ID
+//	@Tags			users
+//	@Param			id	path		int	true	"User ID"
+//	@Success		200	{object}	store.User
+//	@Failure		400	{object}	error
+//	@Failure		404	{object}	error
+//	@Failure		500	{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/{id}	[get]
 func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := app.getUserFromContext(r)
 	if err := app.jsonResponse(w, http.StatusOK, user); err != nil {

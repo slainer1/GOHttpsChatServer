@@ -5,7 +5,7 @@ services:
     image: postgres:18.3
     container_name: postgres-db
     environment:
-      POSTGRES_DB: socialnetwork
+      POSTGRES_DB: social
       POSTGRES_USER: user
       POSTGRES_PASSWORD: Nathansno1
     volumes:
