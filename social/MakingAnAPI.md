@@ -37,3 +37,8 @@ TIPS and Rules to follow
 
 Structured logging
 1. {Key-value pair: error "," properties: ","}
+
+Vocabulary
+Payload: Typically a block of JSON, built from a class or a struct that defines what data is going to be transferred
+HTTPS methods: POST, PUT, PATCH, GET, DELETE, the language used to deliver payloads
+BCRYPT: The industry standard for hashing passwords. 
