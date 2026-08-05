@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"go.uber.org/zap"
 	_ "main/docs"
 	"main/internal/db"
 	"main/internal/env"
@@ -48,17 +48,30 @@ func main() {
 		},
 		env: env.GetString("ENV", "development"),
 	}
+	//Logger
+
+	//flushes buffered log entries
+	logger := zap.Must(zap.NewProduction()).Sugar()
+	defer logger.Sync()
+	//Database
+
 	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
 	if err != nil {
-		log.Panic(err)
+		logger.Fatal(err)
 	}
+
 	defer db.Close()
-	log.Printf("DB Conntection Pool Established")
+	logger.Info("DB Conntection Pool Established")
+
 	store := store.NewStorage(db)
-	app := &application{config: cfg, store: store}
+	app := &application{
+		config: cfg,
+		store:  store,
+		logger: logger,
+	}
 
 	mux := app.mount()
-	log.Fatal(app.run(mux))
+	logger.Fatal(app.run(mux))
 
 }
 
