@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"main/docs"
 	"main/internal/store"
 	"net/http"
@@ -93,7 +92,8 @@ func (app *application) run(mux *chi.Mux) error {
 		ReadTimeout:  10 * time.Second,
 		IdleTimeout:  time.Minute,
 	}
-	log.Printf("Server Started on Port:%s", app.config.addr)
+	//app.logger.Infow("Server Started on Port:%s", app.config.addr)
+	app.logger.Infow("Server Started on: ", app.config.addr, "env: ", app.config.env)
 
 	return srv.ListenAndServe()
 }
