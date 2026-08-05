@@ -1,11 +1,12 @@
 package main
 
 import (
-	"go.uber.org/zap"
 	_ "main/docs"
 	"main/internal/db"
 	"main/internal/env"
 	"main/internal/store"
+
+	"go.uber.org/zap"
 )
 
 // //////////////////////////////////////////////
