@@ -1,25 +1,34 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"main/internal/store"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 type RegisterUserPayload struct {
-	Username string `json:"username" validate:"required, max=100"`
+	Username string `json:"username" validate:"required,max=100"`
 	Email    string `json:"email" validate:"required,email,max=255"`
 	Password string `json:"password" validate:"required,min=3,max=72"`
 }
 
+type UserWithToken struct {
+	*store.User
+	Token string `json:"token"`
+}
+
 // registerUserHandler godoc
 //
-//	@Summary Registers a User
-//	@Description Registers a user
-//	@Tags		authentication
-//	@Accept		json
-//	@Produce	json
-//	@param		payload body	RegisterUserPayload true	"User credentials"
-//	@Success		201		{object}	store.User		"User registered"
+//	@Summary		Registers a User
+//	@Description	Registers a user
+//	@Tags			authentication
+//	@Accept			json
+//	@Produce		json
+//	@param			payload	body		RegisterUserPayload	true	"User credentials"
+//	@Success		201		{object}	UserWithToken		"User registered"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
 //	@Router			/authentication/user [post]
@@ -42,10 +51,31 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		app.statusInternalServerErrorHandler(w, r, err)
 	}
 	//store the user
-	err := app.store.Users.
+	ctx := r.Context()
 
-	//success code
-	if err := app.jsonResponse(w, http.StatusCreated, nil); err != nil {
+	//STORE IN DATABASE FOR ENCRYPTION
+	plainToken := uuid.New().String()
+	hash := sha256.Sum256([]byte(plainToken))
+	hashToken := hex.EncodeToString(hash[:])
+
+	err := app.store.Users.CreateAndInvite(ctx, user, hashToken, app.config.mail.exp)
+	if err != nil {
+		switch err {
+		case store.ErrDuplicateEmail:
+			app.badRequestResponsee(w, r, err)
+		case store.ErrDuplicateUsername:
+			app.badRequestResponsee(w, r, err)
+		default:
+			app.statusInternalServerErrorHandler(w, r, err)
+		}
+		return
+	}
+	userWithToken := UserWithToken{
+		User:  user,
+		Token: plainToken,
+	}
+
+	if err := app.jsonResponse(w, http.StatusCreated, userWithToken); err != nil {
 		app.statusInternalServerErrorHandler(w, r, err)
 	}
 

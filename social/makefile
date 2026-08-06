@@ -1,7 +1,7 @@
 
 
 MIGRATIONS_PATH = ./cmd/migrations/migrate
-DB_ADDR = postgres://user:Nathansno1@localhost/socialnetwork?sslmode=disable
+DB_ADDR = postgres://user:Nathansno1@localhost:5432/socialnetwork?sslmode=disable
 .PHONY: migrate-create
 migration:
 	@migrate create -seq -ext sql -dir $(MIGRATIONS_PATH) $(filter-out $@,$(MAKECMDGOALS))
